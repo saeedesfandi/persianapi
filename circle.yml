@@ -11,16 +11,10 @@ machine:
     CIRCLE_ENV: test
     DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
 
-checkout:
-  post:
-    - git pull
-
 dependencies:
   override:
     - bundle install:
         timeout: 300
-  cache_directories:
-    - "~/persianapi"
 
 database:
   override:
