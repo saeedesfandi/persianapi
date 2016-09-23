@@ -1,0 +1,43 @@
+machine:
+  timezone:
+    Asia/Tehran
+  ruby:
+    version:
+      2.3.1
+  hosts:
+    circlehost: 127.0.0.1
+    api.persianapi.dev: 127.0.0.1
+  environment:
+    CIRCLE_ENV: test
+    DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+
+checkout:
+  post:
+    - git pull
+
+dependencies:
+  override:
+    - bundle install:
+        timeout: 300
+  cache_directories:
+    - "~/persianapi"
+
+database:
+  override:
+    - cp config/database.yml config/database.yml
+    - RAILS_ENV=test bundle exec rake db:schema:load --trace
+    - bundle exec rake db:test:prepare
+
+test:
+  override:
+    - bundle exec rspec spec/
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: persianapi
+
+notify:
+  webhooks:
+    - url: https://someurl.com/hooks/circle
