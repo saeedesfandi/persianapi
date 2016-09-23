@@ -7,7 +7,7 @@ info:
   contact:
     name: Saeed Esfandi
     email: saeed.esfandi@gmail.com
-    url: http://cse.shirazu.ac.ir/~esfandi
+    url: https://ir.linkedin.com/in/saeedesfandi
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
@@ -15,7 +15,6 @@ info:
 host: persianapi.herokuapp.com
 basePath: /v1
 schemes:
-  - http
   - https
 
 consumes:
@@ -26,16 +25,30 @@ produces:
 paths:
   /:
     get:
+      summary: Root
       description: Returns Welcome to user
+      tags:
+        - Root
       responses:
         200:
           description: OK
   /services:
     get:
+      summary: Services List
       description: Returns all services from the system that the user has access to
+      tags:
+        - Services
       responses:
         200:
           description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /services/{id}:
     parameters:
       - name: id
@@ -44,9 +57,41 @@ paths:
         type: string
         required: true
     get:
+      summary: Service Options
       description: Returns service options
+      tags:
+        - Services
       responses:
         200:
           description: OK
+          schema:
+            $ref: '#/definitions/Service'
         404:
           description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Service:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id
+      description:
+        type: string
+        description: Description of service.
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
